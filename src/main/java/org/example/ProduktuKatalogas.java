@@ -1,7 +1,9 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
 
 public class ProduktuKatalogas <T extends Produktas>{
     private List<T> productList = new ArrayList<>();
@@ -43,7 +45,7 @@ public class ProduktuKatalogas <T extends Produktas>{
     public List<T> gautiProduktusPagalKaina(double minKaina, double maxKaina){
         List<T> newList = new ArrayList<>();
         for(T t : productList){
-            if(minKaina <= t.getKaina() || t.getKaina() <= maxKaina){
+            if(minKaina <= t.getKaina() && t.getKaina() <= maxKaina){
                 newList.add(t);
             }
         }
@@ -54,5 +56,36 @@ public class ProduktuKatalogas <T extends Produktas>{
             System.out.println(t);
         }
     }
+    public T gautiProduktaPagalPavadinima(String pavadinimas){
+        for(T t : productList){
+            if(Objects.equals(t.getPavadinimas(), pavadinimas)){
+                return t;
+            }
+        }
+        return null;
+    }
+    public void rusiuotiPagalPavadinima(){
+        Collections.sort(productList, new Comparator<T>() {
+            @Override
+            public int compare(T t, T t1) {
+                return t.getPavadinimas().compareTo(t1.getPavadinimas());
+            }
+        });
+    }
+    public void rusiuotiPagalKaina(){
+        Collections.sort(productList, Comparator.comparing(T::getKaina));
+    }
+    public void issaugotiProduktus(String failoVardas) throws IOException {
+        String path = "C:\\Users\\Darius\\IdeaProjects\\JavaGenericsUzduotys06-05\\src\\main\\java\\org\\example\\" + failoVardas;
+        FileWriter fileWriter = new FileWriter(path, true);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        for(T t : productList){
+            bufferedWriter.write(t.toString());
+            bufferedWriter.newLine();
+        }
+        bufferedWriter.close();
+        fileWriter.close();
+    }
+
 
 }
